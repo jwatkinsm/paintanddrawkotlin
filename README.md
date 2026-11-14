@@ -51,6 +51,14 @@ To install and run the Paint & Draw application on your local development machin
 * [Android Graphics and Canvas Guide](https://developer.android.com/develop/ui/views/graphics/2d-graphics)
 * [Android MediaStore API Guide](https://developer.android.com/training/data-storage/shared/media)
 
+# AI Disclousure
+
+I used AI tools as a learning and reference resource during this project. I used them mainly to brainstorm design ideas, clarify syntax questions, review logic, API data retrieiving and point me toward useful documentation when I got stuck.
+
+When I received suggestions, I did not rely on them blindly. I reviewed the ideas carefully, rewrote code in my own style, adjusted variable and method names to match my project, and made sure the final solution fit naturally into my existing structure.
+
+Using AI in this way helped me better understand programming concepts while still making sure I could explain the code, justify my design choices, and demonstrate my understanding during the video walkthrough.
+
 # Future Work
 
 * [ ] Add shape drawing tools (rectangles, circles, straight lines).
