@@ -10,19 +10,35 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
 
+/** Filename used for persisting the drawing canvas session in internal app storage. */
 private const val SESSION_FILE_NAME = "canvas_session.json"
 
+/**
+ * Data holder representing a saved canvas session state, including active strokes and redo history.
+ *
+ * @property strokes List of completed drawing strokes.
+ * @property redoStack List of strokes available for redo operations.
+ */
 data class SavedCanvasSession(
     val strokes: List<LineStroke>,
     val redoStack: List<LineStroke>
 )
 
+/**
+ * Asynchronously serializes and saves the current drawing canvas session (`strokes` and `redoStack`)
+ * to a JSON file in internal app storage on the IO dispatcher.
+ *
+ * @param context The application context used to access internal files directory.
+ * @param strokes The collection of active drawing strokes.
+ * @param redoStack The collection of redo history strokes.
+ */
 suspend fun saveCanvasSession(
     context: Context,
     strokes: List<LineStroke>,
     redoStack: List<LineStroke>
 ) = withContext(Dispatchers.IO) {
     try {
+        // Construct root JSON object containing both stroke collections
         val rootJson = JSONObject().apply {
             put("strokes", strokesToJsonArray(strokes))
             put("redoStack", strokesToJsonArray(redoStack))
@@ -34,6 +50,13 @@ suspend fun saveCanvasSession(
     }
 }
 
+/**
+ * Asynchronously loads and parses the saved drawing canvas session from internal storage on the IO dispatcher.
+ * Returns an empty session if no save file exists or if parsing fails.
+ *
+ * @param context The application context used to access internal files directory.
+ * @return A [SavedCanvasSession] containing restored strokes and redo stack.
+ */
 suspend fun loadCanvasSession(context: Context): SavedCanvasSession = withContext(Dispatchers.IO) {
     val file = File(context.filesDir, SESSION_FILE_NAME)
     if (!file.exists()) {
@@ -51,6 +74,9 @@ suspend fun loadCanvasSession(context: Context): SavedCanvasSession = withContex
     }
 }
 
+/**
+ * Converts a list of [LineStroke] objects into a JSON array structure for persistence.
+ */
 private fun strokesToJsonArray(strokes: List<LineStroke>): JSONArray {
     val array = JSONArray()
     for (stroke in strokes) {
@@ -72,6 +98,9 @@ private fun strokesToJsonArray(strokes: List<LineStroke>): JSONArray {
     return array
 }
 
+/**
+ * Parses a JSON array back into a list of [LineStroke] objects.
+ */
 private fun jsonArrayToStrokes(array: JSONArray?): List<LineStroke> {
     if (array == null) return emptyList()
     val result = mutableListOf<LineStroke>()
