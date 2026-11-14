@@ -26,12 +26,35 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 
-class MainActivity : ComponentActivity() {
+private val CharcoalBackground = Color(0xFF1E2022)
+private val CharcoalSurface = Color(0xFF2A2D32)
+private val CharcoalAccent = Color(0xFF526D82)
+private val CharcoalHighlight = Color(0xFF9DB2BF)
+private val CharcoalText = Color(0xFFF1F5F9)
+
+private val CharcoalColorScheme = darkColorScheme(
+    primary = CharcoalAccent,
+    onPrimary = CharcoalText,
+    secondary = CharcoalHighlight,
+    onSecondary = CharcoalBackground,
+    background = CharcoalBackground,
+    onBackground = CharcoalText,
+    surface = CharcoalSurface,
+    onSurface = CharcoalText,
+    surfaceVariant = CharcoalSurface,
+    onSurfaceVariant = CharcoalHighlight,
+    outline = Color(0xFF64748B)
+)
+
+    class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MaterialTheme {
-                Surface(modifier = Modifier.fillMaxSize()) {
+            MaterialTheme(colorScheme = CharcoalColorScheme) {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = CharcoalBackground
+                ) {
                     PaintAppScreen()
                 }
             }
@@ -70,7 +93,7 @@ fun PaintAppScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF3F4F6))
+            .background(Color(0xFF36454F))
             .statusBarsPadding()
     ) {
         // Row 1: Undo, Redo, Clear, Save
