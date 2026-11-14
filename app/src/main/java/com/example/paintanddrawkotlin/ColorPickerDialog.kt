@@ -12,16 +12,25 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
+/**
+ * A dialog allowing the user to pick a custom color using Red, Green, and Blue sliders.
+ *
+ * @param initialColor The starting color loaded into the RGB sliders when the dialog opens.
+ * @param onDismiss Callback invoked when the dialog is dismissed without selecting.
+ * @param onColorSelected Callback invoked with the newly chosen [Color] when the user confirms.
+ */
 @Composable
 fun CustomColorPickerDialog(
     initialColor: Color,
     onDismiss: () -> Unit,
     onColorSelected: (Color) -> Unit
 ) {
+    // RGB component state values ranging from 0.0f to 1.0f
     var red by remember { mutableFloatStateOf(initialColor.red) }
     var green by remember { mutableFloatStateOf(initialColor.green) }
     var blue by remember { mutableFloatStateOf(initialColor.blue) }
 
+    // Dynamically constructed preview color based on slider values
     val previewColor = Color(red, green, blue)
 
     AlertDialog(
@@ -32,6 +41,7 @@ fun CustomColorPickerDialog(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
+                // Color preview circular swatch
                 Box(
                     modifier = Modifier
                         .size(56.dp)
@@ -40,12 +50,15 @@ fun CustomColorPickerDialog(
                         .border(2.dp, Color.Gray, CircleShape)
                 )
 
+                // Red channel control
                 Text("Red: ${(red * 255).toInt()}")
                 Slider(value = red, onValueChange = { red = it })
 
+                // Green channel control
                 Text("Green: ${(green * 255).toInt()}")
                 Slider(value = green, onValueChange = { green = it })
 
+                // Blue channel control
                 Text("Blue: ${(blue * 255).toInt()}")
                 Slider(value = blue, onValueChange = { blue = it })
             }

@@ -9,18 +9,30 @@ import android.provider.MediaStore
 import android.widget.Toast
 import androidx.compose.ui.graphics.toArgb
 
+/**
+ * Renders the list of drawn [LineStroke] objects onto an off-screen [Bitmap]
+ * and saves the resulting image to the device's shared MediaStore gallery under `Pictures/KotlinPaintApp`.
+ *
+ * @param context The application or activity context used to access ContentResolver and display Toasts.
+ * @param strokes The collection of completed [LineStroke]s drawn by the user.
+ * @param canvasWidth The width of the drawing surface in pixels.
+ * @param canvasHeight The height of the drawing surface in pixels.
+ */
 fun saveArtworkToGallery(
     context: Context,
     strokes: List<LineStroke>,
     canvasWidth: Int,
     canvasHeight: Int
 ) {
+    // Validate dimensions before creating bitmap
     if (canvasWidth <= 0 || canvasHeight <= 0) return
 
+    // Create an ARGB bitmap and initialize canvas with a white background
     val bitmap = Bitmap.createBitmap(canvasWidth, canvasHeight, Bitmap.Config.ARGB_8888)
     val androidCanvas = android.graphics.Canvas(bitmap)
     androidCanvas.drawColor(android.graphics.Color.WHITE)
 
+    // Configure standard Android Paint for vector/stroke rendering
     val paint = Paint().apply {
         isAntiAlias = true
         style = Paint.Style.STROKE
@@ -28,6 +40,7 @@ fun saveArtworkToGallery(
         strokeJoin = Paint.Join.ROUND
     }
 
+    // Draw each stored stroke segment onto the Android canvas
     for (stroke in strokes) {
         if (stroke.points.size < 2) continue
         paint.color = stroke.color.toArgb()
@@ -40,6 +53,7 @@ fun saveArtworkToGallery(
         }
     }
 
+    // Prepare MediaStore content values for saving the image
     val filename = "Artwork_${System.currentTimeMillis()}.png"
     val contentValues = ContentValues().apply {
         put(MediaStore.Images.Media.DISPLAY_NAME, filename)
@@ -53,6 +67,7 @@ fun saveArtworkToGallery(
     val resolver = context.contentResolver
     val uri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
 
+    // Write bitmap data to output stream and finalize the MediaStore entry
     uri?.let { imageUri ->
         resolver.openOutputStream(imageUri)?.use { stream ->
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
